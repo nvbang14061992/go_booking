@@ -88,8 +88,7 @@
     <!-- start block <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -->
     {{block "content" .}}
     {{ end }}
-    {{block "js" .}}
-    {{ end }}
+
     <!-- End block>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
 
     <footer class="my-footer">
@@ -144,11 +143,6 @@
           false
         );
       })();
-
-      const elem = document.getElementById("reservation-dates");
-      const rangePicker = new DateRangePicker(elem, {
-        format: "yyyy-mm-dd",
-      });
 
       function notify(msg, msgType) {
         notie.alert({
@@ -252,4 +246,6 @@
     </script>
   </body>
 </html>
+{{block "js" .}}
+{{ end }}
 {{ end }}
