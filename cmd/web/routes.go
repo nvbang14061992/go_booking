@@ -13,9 +13,16 @@ func routes(app *config.AppConfig) http.Handler {
 	// mux := pat.New()
 	mux := chi.NewRouter()
 	
+	// Use Chi middlewares
+	// recover from panics (user request ), log request info, set secure headers
+	// It handles the error gracefully by returning an http.StatusInternalServerError (500)
+	// a bit similar to what next(err) function does in nodejs/express, where all the subsequent handlers/middlewares are skipped
 	mux.Use(middleware.Recoverer)
-	
+
+	// protect against CSRF attacks
 	mux.Use(NoSurf)
+
+	// load and save session on every request
 	mux.Use(SessionLoad)
 
 	mux.Get("/", handlers.Repo.Home)
@@ -23,6 +30,8 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/generals-quarters", handlers.Repo.Generals)
 	mux.Get("/majors-suite", handlers.Repo.Majors)
 	mux.Get("/search-availability", handlers.Repo.Availability)
+	mux.Post("/search-availability", handlers.Repo.PostAvailability)
+	mux.Post("/search-availability-json", handlers.Repo.AvailabilityJSON)
 	mux.Get("/make-reservation", handlers.Repo.Reservation)
 	mux.Get("/contact", handlers.Repo.Contact)
 	

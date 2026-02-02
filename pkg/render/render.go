@@ -9,6 +9,7 @@ import (
 
 	"github.com/bangn/bookings/pkg/config"
 	"github.com/bangn/bookings/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 // app is the application config variable,
@@ -23,12 +24,14 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+// AddDefaultData adds default data to all templates
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // RenderTemplate renders HTML templates
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -47,7 +50,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 	buffer := new(bytes.Buffer)
 
 	// add default data to template data in all templates
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
 	// execute the template, meaning apply the template to the data
 	_ = t.Execute(buffer, td)
