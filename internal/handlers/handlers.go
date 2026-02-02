@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/bangn/bookings/pkg/config"
-	"github.com/bangn/bookings/pkg/models"
-	"github.com/bangn/bookings/pkg/render"
+	"github.com/bangn/bookings/internal/config"
+	"github.com/bangn/bookings/internal/models"
+	"github.com/bangn/bookings/internal/render"
 )
 
 // Repo the repository used by the handlers

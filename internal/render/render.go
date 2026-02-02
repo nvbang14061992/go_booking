@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/bangn/bookings/pkg/config"
-	"github.com/bangn/bookings/pkg/models"
+	"github.com/bangn/bookings/internal/config"
+	"github.com/bangn/bookings/internal/models"
 	"github.com/justinas/nosurf"
 )
 
