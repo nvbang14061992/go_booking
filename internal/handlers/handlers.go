@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/bangn/bookings/internal/config"
+	"github.com/bangn/bookings/internal/forms"
 	"github.com/bangn/bookings/internal/models"
 	"github.com/bangn/bookings/internal/render"
 )
@@ -53,9 +54,18 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
 // Reservation renders the make reservation and display form
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	fmt.Println("[debug] inside the reservation handler")
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		// initialize an empty form, then pass data to it, then return data or errors back via post handler
+		Form: forms.New(nil),
+	})
 }
 
+
+// PostReservation handles the reservation form submission
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[debug] inside the post reservation handler")
+}
 
 // Generals renders the room page
 func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
