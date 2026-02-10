@@ -64,7 +64,13 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 // PostReservation handles the reservation form submission
 func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[debug] inside the post reservation handler")
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Println("[error] unable to parse form")
+		return
+	}
+
+	
 }
 
 // Generals renders the room page
