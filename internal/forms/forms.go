@@ -1,13 +1,16 @@
 package forms
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
 type Form struct {
-	url.Values
+	url.Values // this is a map[string][]string, 
+	// when we put unnamed field in struct, it is Embeded Field,
+	// thus Form struct inherits all the methods of url.Values, such as Get, Set, etc. This is a common pattern in Go to achieve composition and code reuse.
 	Errors errors
 }
 
@@ -46,11 +49,11 @@ func (f *Form) Has(field string, r *http.Request) bool {
 	return true
 }
 
-//
-func (f *Form) MinLength(field string, length int) bool {
-	x := f.Get(field)
+// MinLength checks if a field's length is at least a specified minimum. If not, an error message is added to the form's Errors map.
+func (f *Form) MinLength(field string, length int, r *http.Request) bool {
+	x := r.Form.Get(field)
 	if len(x) < length {
-		f.Errors.Add(field, "This field is too short")
+		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
 		return false
 	}
 	return true
