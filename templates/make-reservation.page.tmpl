@@ -9,8 +9,11 @@
         <div class="form-group mt-3">
           <input type="hidden" name="csrf_token" value="{{.CSRFToken}}"></input>
           <label for="first_name">First Name:</label>
+          {{with .Form.Errors.Get "first_name"}}
+            <label class="text-danger">{{.}}</label>
+          {{end}}
           <input
-            class="form-control"
+            class="form-control {{with .Form.Errors.Get "first_name"}}is-invalid{{end}}"
             id="first_name"
             autocomplete="off"
             type="text"
