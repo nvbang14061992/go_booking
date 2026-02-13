@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/bangn/bookings/internal/config"
 	"github.com/bangn/bookings/internal/handlers"
+	"github.com/bangn/bookings/internal/models"
 	"github.com/bangn/bookings/internal/render"
 )
 
@@ -19,6 +21,17 @@ var session *scs.SessionManager
 
 // main is the main function of the application
 func main() {
+	// ---------------------------------------------
+	// add place to store objects in session
+	// ---------------------------------------------
+	gob.Register(models.Reservation{})
+	// This is necessary because the session manager needs to know how to encode and decode the Reservation struct when storing and retrieving it from the session.
+	// The encoding/gob package is used for this purpose, and by registering the struct, we ensure that the session manager can handle it correctly.
+	// If we don't register the struct, we may encounter errors when trying to store or retrieve Reservation objects from the session. 
+	// Because Go does not have built-in serialization for custom types, so it does not understand how to convert the Reservation struct to a format suitable for storage in the session (like a byte slice) and back.
+	// consequently, we register any custom types that we plan to store in the session to avoid serialization issues.
+	// ---------------------------------------------
+
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// set this to true in production
 	app.InProduction = false
