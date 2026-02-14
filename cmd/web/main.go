@@ -21,6 +21,28 @@ var session *scs.SessionManager
 
 // main is the main function of the application
 func main() {
+	err := run()
+	
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// ---------------------------------------------
+	// set up routes
+	// ---------------------------------------------
+	fmt.Printf("Starting server at port %s\n", portNumber)
+
+	srv := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+
+	// listen for a request
+	err = srv.ListenAndServe()
+	log.Fatal(err)
+}
+
+func run() error {
 	// ---------------------------------------------
 	// add place to store objects in session
 	// ---------------------------------------------
@@ -56,7 +78,7 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("Can not creae template cache")
-		return
+		return err
 	}
 
 	// ---------------------------------------------
@@ -78,17 +100,7 @@ func main() {
 	// ---------------------------------------------
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
-	
-	// ---------------------------------------------
-	// set up routes
-	// ---------------------------------------------
-	srv := &http.Server{
-		Addr:    portNumber,
-		Handler: routes(&app),
-	}
 
-	fmt.Printf("Starting server at port %s\n", portNumber)
-	// listen for a request
-	err = srv.ListenAndServe()
-	log.Fatal(err)
+
+	return nil
 }
