@@ -57,6 +57,9 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 	var emptyReservation models.Reservation
 	data := make(map[string]interface{})
 	data["reservation"] = emptyReservation
+
+	// models.Reservation{} was added to gob, thus we can store it in session,
+	// and we can also get it from session, but here we just initialize an empty reservation struct, then pass it to template,
 	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 		// initialize an empty form, then pass data to it, then return data or errors back via post handler
 		Form: forms.New(nil),
@@ -88,6 +91,9 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	if !form.Valid() {
 		data := make(map[string]interface{})
+		// models.Reservation{} was added to gob, thus we can store it in session,
+		// here session can serialize the reservation struct, gotten from form, and pass it back to template, 
+		// so that the user doesn't have to re-enter the data they already entered, just correct the errors
 		data["reservation"] = reservation
 		render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
@@ -160,11 +166,11 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	// If the assertion is successful, ok will be true, and reservation will hold the value with the correct type.
 	// If the assertion fails (meaning the value is not of the expected type), ok will be false, and reservation will be the zero value for models.Reservation.
 	if !ok {
-		fmt.Println("cannot get reservation from session")
-		// http.Redirect(w, r, "/", http.StatusSeeOther)
+		fmt.Println("[Error] cannot get reservation from session")
+		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
-
 	// this is type assertion technique in Go, example:
 	// 	var x interface{} = models.Reservation{}
 
@@ -172,6 +178,12 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 
 	// ok == true
 	// r contains the struct
+
+	// free up the session, 
+	// since we already got the reservation data from session, we can remove it from session, 
+	// so that it won't take up space in session, and also it won't cause confusion if we have multiple reservations in session, 
+	// we only want to keep the current reservation in session, thus we remove it after we get it
+	m.App.Session.Remove(r.Context(), "reservation")
 
 	// create a map to hold data sent to template
 	data := make(map[string]interface{})

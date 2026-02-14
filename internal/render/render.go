@@ -26,6 +26,18 @@ func NewTemplates(a *config.AppConfig) {
 
 // AddDefaultData adds default data to all templates
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	// go can not indentify specific request's context, thus we need to pass the request context to session, 
+	// so that session can identify which request's session data to get 
+	// go philosophy: explicit is better than implicit, you will add only the things you want to add, not all the things in session, 
+	// thus we need to pop the data we want to add to template data, 
+	// and add them to template data, then pass the template data to template, 
+	// this is more explicit than just pass the whole session data to template, 
+	// which may contain some sensitive data that we don't want to expose to template
+	td.Flash = app.Session.PopString(r.Context(), "flash")
+	td.Error = app.Session.PopString(r.Context(), "error")
+	td.Warning = app.Session.PopString(r.Context(), "warning")
+	
+	
 	td.CSRFToken = nosurf.Token(r)
 	return td
 }

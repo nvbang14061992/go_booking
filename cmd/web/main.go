@@ -26,11 +26,14 @@ func main() {
 	// ---------------------------------------------
 	gob.Register(models.Reservation{})
 	// This is necessary because the session manager needs to know how to encode and decode the Reservation struct when storing and retrieving it from the session.
-	// The encoding/gob package is used for this purpose, and by registering the struct, we ensure that the session manager can handle it correctly.
-	// If we don't register the struct, we may encounter errors when trying to store or retrieve Reservation objects from the session. 
-	// Because Go does not have built-in serialization for custom types, so it does not understand how to convert the Reservation struct to a format suitable for storage in the session (like a byte slice) and back.
+	// Remember that, we only put map of any(map[string]interface{}) in template data, thus we need to register the struct that we want to put in the map, 
+	// so that session can serialize and deserialize it correctly.
+	// By registering the Reservation struct with gob, we ensure that the session manager can handle it properly when we store it in the session and retrieve it later.
+	// If we don't register the struct, we may encounter errors when trying to store or retrieve Reservation objects from the session, because Go does not have built-in serialization for custom types, so it does not understand how to convert the Reservation struct to a format suitable for storage in the session (like a byte slice) and back.
 	// consequently, we register any custom types that we plan to store in the session to avoid serialization issues.
 	// ---------------------------------------------
+	// The encoding/gob package is used for this purpose, and by registering the struct, we ensure that the session manager can handle it correctly.
+
 
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// set this to true in production
