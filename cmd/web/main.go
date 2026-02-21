@@ -30,7 +30,7 @@ func main() {
 	// ---------------------------------------------
 	// set up routes
 	// ---------------------------------------------
-	fmt.Printf("Starting server at port %s\n", portNumber)
+	fmt.Printf("Starting server at port http://localhost%s\n", portNumber)
 
 	srv := &http.Server{
 		Addr:    portNumber,
