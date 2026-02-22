@@ -50,6 +50,18 @@ func TestRenderTemplate(t *testing.T) {
 	}
 }
 
+func TestNewTemplates(t *testing.T) {
+	NewTemplates(app)
+}
+
+func TestCreateTemplateCache(t *testing.T) {
+	pathToTemplates = "./../../templates"
+	_, err := CreateTemplateCache()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func getSession() (*http.Request, error) {
 	r, err := http.NewRequest("GET", "http://testing", nil)
 	if err != nil {
