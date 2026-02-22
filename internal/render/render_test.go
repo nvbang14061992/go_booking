@@ -23,6 +23,33 @@ func TestAddDefaultData(t *testing.T) {
 	
 }
 
+
+func TestRenderTemplate(t *testing.T) {
+	pathToTemplates = "./../../templates"
+	tc, err := CreateTemplateCache()
+	if err != nil {
+		t.Error(err)
+	}
+
+	app.TemplateCache = tc
+
+	rq, err := getSession()
+	if err != nil {
+		t.Error(err)
+	}
+	w := &myWriter{}
+
+	err = RenderTemplate(w, rq, "home.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		t.Error("Error rendering template:", err)
+	}
+
+	err = RenderTemplate(w, rq, "non-existent.page.tmpl", &models.TemplateData{})
+	if err == nil {
+		t.Error("Expected error when rendering non-existent template, but got nil")
+	}
+}
+
 func getSession() (*http.Request, error) {
 	r, err := http.NewRequest("GET", "http://testing", nil)
 	if err != nil {
