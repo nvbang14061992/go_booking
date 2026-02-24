@@ -2,6 +2,7 @@ package forms
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"testing"
 )
@@ -13,6 +14,14 @@ func TestForm_Valid(t *testing.T) {
 	}
 
 	if !newForm.Valid() {
+		t.Error("got non-zero errors when there should be none")
+	}
+	
+	// create a new form with httptest data, this is recommended way, 
+	// because it simulates a real HTTP request and allows us to test the form handling in a more realistic way.
+	r := httptest.NewRequest("POST", "/submit", nil)
+	form := New(r.PostForm)
+	if !form.Valid() {
 		t.Error("got non-zero errors when there should be none")
 	}
 }
