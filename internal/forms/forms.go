@@ -2,7 +2,6 @@ package forms
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
 	"strings"
 
@@ -41,8 +40,8 @@ func (f *Form) Required(fields ...string) {
 }
 
 // Form checks if a field is present in the form data.
-func (f *Form) Has(field string, r *http.Request) bool {
-	x := r.Form.Get(field)
+func (f *Form) Has(field string) bool {
+	x := f.Get(field)
 	if x == "" {
 		f.Errors.Add(field, "This field cannot be blank")
 		return false
@@ -52,8 +51,8 @@ func (f *Form) Has(field string, r *http.Request) bool {
 }
 
 // MinLength checks if a field's length is at least a specified minimum. If not, an error message is added to the form's Errors map.
-func (f *Form) MinLength(field string, length int, r *http.Request) bool {
-	x := r.Form.Get(field)
+func (f *Form) MinLength(field string, length int) bool {
+	x := f.Get(field)
 	if len(x) < length {
 		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
 		return false
@@ -62,8 +61,8 @@ func (f *Form) MinLength(field string, length int, r *http.Request) bool {
 }
 
 // IsEmail checks if a field contains a valid email address. If not, an error message is added to the form's Errors map.
-func (f *Form) IsEmail(field string, r *http.Request) bool {
-	x := r.Form.Get(field)
+func (f *Form) IsEmail(field string) bool {
+	x := f.Get(field)
 	if !govalidator.IsEmail(x) {
 		f.Errors.Add(field, "This field must be a valid email address")
 		return false
