@@ -11,6 +11,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/bangn/bookings/internal/config"
 	"github.com/bangn/bookings/internal/handlers"
+	"github.com/bangn/bookings/internal/helpers"
 	"github.com/bangn/bookings/internal/models"
 	"github.com/bangn/bookings/internal/render"
 )
@@ -113,6 +114,11 @@ func run() error {
 	// ---------------------------------------------
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
+
+	// ---------------------------------------------
+	// set the app config to the helpers package, to use helper functions in templates
+	// ---------------------------------------------
+	helpers.NewHelpers(&app)
 
 
 	return nil
