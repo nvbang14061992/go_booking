@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -17,6 +18,8 @@ import (
 const portNumber = ":8080"
 var app config.AppConfig
 var session *scs.SessionManager
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 
 // main is the main function of the application
@@ -60,6 +63,16 @@ func run() error {
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// set this to true in production
 	app.InProduction = false
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	// ---------------------------------------------
+	// create loggers
+	// ---------------------------------------------
+	infoLog = log.New(os.Stdout, "[INFO]\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "[ERROR]\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	// ---------------------------------------------
 	// create session configuration parameters// ---------------------------------------------
