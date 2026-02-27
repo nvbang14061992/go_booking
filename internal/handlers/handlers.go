@@ -7,6 +7,7 @@ import (
 
 	"github.com/bangn/bookings/internal/config"
 	"github.com/bangn/bookings/internal/forms"
+	"github.com/bangn/bookings/internal/helpers"
 	"github.com/bangn/bookings/internal/models"
 	"github.com/bangn/bookings/internal/render"
 )
@@ -72,7 +73,7 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		fmt.Println("[error] unable to parse form")
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -146,7 +147,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	out, err := json.MarshalIndent(resp, "", "     ")
 	if err != nil {
-		fmt.Println(err)
+		helpers.ServerError(w, err)
 	}
 
 	
@@ -166,7 +167,7 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	// If the assertion is successful, ok will be true, and reservation will hold the value with the correct type.
 	// If the assertion fails (meaning the value is not of the expected type), ok will be false, and reservation will be the zero value for models.Reservation.
 	if !ok {
-		fmt.Println("[Error] cannot get reservation from session")
+		m.App.ErrorLog.Println("Cannot get reservation from session")
 		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
