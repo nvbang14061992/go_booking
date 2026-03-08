@@ -55,6 +55,10 @@ func run() (*driver.DB, error) {
 	// add place to store objects in session
 	// ---------------------------------------------
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 	// This is necessary because the session manager needs to know how to encode and decode the Reservation struct when storing and retrieving it from the session.
 	// Remember that, we only put map of any(map[string]interface{}) in template data, thus we need to register the struct that we want to put in the map, 
 	// so that session can serialize and deserialize it correctly.
