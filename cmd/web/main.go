@@ -133,7 +133,7 @@ func run() (*driver.DB, error) {
 	// ---------------------------------------------
 	// set the app config to the render package
 	// ---------------------------------------------
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 
 	// ---------------------------------------------
 	// set the app config to the handler package, to render templates

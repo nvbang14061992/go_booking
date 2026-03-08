@@ -42,7 +42,7 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
 	m.DB.AllUsers()
 
-	render.RenderTemplate(w, r, "home.page.tmpl", &models.TemplateData{})
+	render.Template(w, r, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the about page handler
@@ -54,7 +54,7 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
 	stringMap["remote_ip"] = remoteIP
 
-	render.RenderTemplate(w, r, "about.page.tmpl", &models.TemplateData{
+	render.Template(w, r, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 	})
 }
@@ -67,7 +67,7 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 	// models.Reservation{} was added to gob, thus we can store it in session,
 	// and we can also get it from session, but here we just initialize an empty reservation struct, then pass it to template,
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+	render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 		// initialize an empty form, then pass data to it, then return data or errors back via post handler
 		Form: forms.New(nil),
 		Data: data,
@@ -102,7 +102,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		// here session can serialize the reservation struct, gotten from form, and pass it back to template, 
 		// so that the user doesn't have to re-enter the data they already entered, just correct the errors
 		data["reservation"] = reservation
-		render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
 			Form: form,
 			Data: data,
 		})
@@ -117,19 +117,19 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 // Generals renders the room page
 func (m *Repository) Generals(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "generals.page.tmpl", &models.TemplateData{})
+	render.Template(w, r, "generals.page.tmpl", &models.TemplateData{})
 }
 
 
 // Majors renders the room page
 func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "majors.page.tmpl", &models.TemplateData{})
+	render.Template(w, r, "majors.page.tmpl", &models.TemplateData{})
 }
 
 
 // Availability render search availability page
 func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "search-availability.page.tmpl", &models.TemplateData{})
+	render.Template(w, r, "search-availability.page.tmpl", &models.TemplateData{})
 }
 
 // PostAvailability render search availability page
@@ -163,7 +163,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 // Contact render search Contact page
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
+	render.Template(w, r, "contact.page.tmpl", &models.TemplateData{})
 }
 
 // ReservationSummary render reservation summary page
@@ -195,7 +195,7 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	// create a map to hold data sent to template
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
-	render.RenderTemplate(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
+	render.Template(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
 		Data: data,
 	})
 }
