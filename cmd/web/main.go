@@ -10,10 +10,12 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/bangn/bookings/internal/config"
+	"github.com/bangn/bookings/internal/driver"
 	"github.com/bangn/bookings/internal/handlers"
 	"github.com/bangn/bookings/internal/helpers"
 	"github.com/bangn/bookings/internal/models"
 	"github.com/bangn/bookings/internal/render"
+	"github.com/joho/godotenv"
 )
 
 const portNumber = ":8080"
@@ -25,11 +27,13 @@ var errorLog *log.Logger
 
 // main is the main function of the application
 func main() {
-	err := run()
+	db, err := run()
 	
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer db.SQL.Close()
 
 	// ---------------------------------------------
 	// set up routes
@@ -46,7 +50,7 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	// ---------------------------------------------
 	// add place to store objects in session
 	// ---------------------------------------------
@@ -60,6 +64,13 @@ func run() error {
 	// ---------------------------------------------
 	// The encoding/gob package is used for this purpose, and by registering the struct, we ensure that the session manager can handle it correctly.
 
+	// Load env
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	dbPassword := fmt.Sprintf(os.Getenv("DATABASE_PASSWORD"))
+	dbName := fmt.Sprintf(os.Getenv("DATABASE_NAME"))
 
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// set this to true in production
@@ -87,12 +98,23 @@ func run() error {
 	app.Session = session
 
 	// ---------------------------------------------
+	// connect to database
+	// ---------------------------------------------
+	log.Println("Connecting to DB...")
+	db, err := driver.ConnectSQL(fmt.Sprintf("host=localhost port=5432 dbname=%s user=admin password=%s", dbName, dbPassword))
+	if err != nil {
+		log.Fatal("Failed to connect to DB")
+		return nil, err
+	}
+	log.Println("[INFO]Connected to DB successfully")
+
+	// ---------------------------------------------
 	// create cache for templates to render later
 	// ---------------------------------------------
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("Can not creae template cache")
-		return err
+		return nil, err
 	}
 
 	// ---------------------------------------------
@@ -112,7 +134,7 @@ func run() error {
 	// ---------------------------------------------
 	// set the app config to the handler package, to render templates
 	// ---------------------------------------------
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 
 	// ---------------------------------------------
@@ -121,5 +143,5 @@ func run() error {
 	helpers.NewHelpers(&app)
 
 
-	return nil
+	return db, nil
 }
