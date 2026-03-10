@@ -137,7 +137,22 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert reservation into database
-	err = m.DB.InsertReservation(reservation)
+	newReservationId, err := m.DB.InsertReservation(reservation)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	// create room restriction struct
+	restriction := models.RoomRestriction{
+		StartDate:	startDate,
+		EndDate:	endDate,
+		RoomID:		roomID,
+		ReservationID: newReservationId,
+		RestrictionID: 1,
+	}
+
+	err = m.DB.InsertRoomRestriction(restriction)
 	if err != nil {
 		helpers.ServerError(w, err)
 		return
