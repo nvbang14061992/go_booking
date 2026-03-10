@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/bangn/bookings/internal/models"
+import (
+	"time"
+
+	"github.com/bangn/bookings/internal/models"
+)
 
 //
 type DatabaseRepo interface {
@@ -8,4 +12,6 @@ type DatabaseRepo interface {
 
 	InsertReservation(res models.Reservation) (int, error)
 	InsertRoomRestriction(r models.RoomRestriction) (error)
+	SearchAvailabilityByDatesByRoomId(start, end time.Time, roomId int) (bool, error)
+	SearchAvailabilityForAllRooms(start, end time.Time) ([]models.Room, error)
 }
