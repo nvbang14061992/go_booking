@@ -116,10 +116,9 @@ func (m *PostgresDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]
 	SELECT
 		r.id, r.room_name
 	FROM
-		room r
-	WHERE
-		r.id not in
-		(SELECT room_id FROM room_restrictions rr WHERE $1 < rr.end_date and $2 > rr.start_date AND);`
+		roomS r
+	WHERE r.id not in
+		(SELECT room_id FROM room_restrictions rr WHERE $1 < rr.end_date AND $2 > rr.start_date);`
 
 	rows, err := m.DB.QueryContext(
 		ctx,
@@ -130,7 +129,6 @@ func (m *PostgresDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]
 	if err != nil {
 		return rooms, err
 	}
-
 	for rows.Next() {
 		var room models.Room
 		err := rows.Scan(
