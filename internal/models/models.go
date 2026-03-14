@@ -25,24 +25,24 @@ type User struct {
 	Email       string
 	Password    string
 	AccessLevel int
-	created_at  time.Time
-	updated_at  time.Time
+	Created_at  time.Time
+	Updated_at  time.Time
 }
 
 // Room is the type for rooms in the system
 type Room struct {
 	ID        int
 	RoomName  string
-	created_at time.Time
-	updated_at time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // Restriction is the type for restrictions in the system
 type Restriction struct {
 	ID        int
 	RestrictionName  string
-	created_at time.Time
-	updated_at time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // RoomRestriction is the type for room restrictions in the system
@@ -57,6 +57,6 @@ type RoomRestriction struct {
 	Reservations Reservation
 	Restrictions Restriction
 
-	created_at    time.Time
-	updated_at    time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
