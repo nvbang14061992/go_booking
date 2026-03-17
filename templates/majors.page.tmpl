@@ -82,7 +82,27 @@
   </div>
 </form>
 `;
-      attention.custom({ title: "Choose your dates", msg: html });
+      const token = "{{.CSRFToken}}";
+      attention.custom({
+        title: "Choose your dates",
+        msg: html,
+
+        willOpen: () => {
+          const elem = document.getElementById("reservation-dates-modal");
+          const rp = new DateRangePicker(elem, {
+            format: "yyyy-mm-dd",
+            showOnFocus: true,
+            minDate: new Date(),
+          });
+        },
+
+        didOpen: () => {
+          document.getElementById("start").removeAttribute("disabled");
+          document.getElementById("end").removeAttribute("disabled");
+        },
+
+        callback: (result) => checkAvailabilityForm(result, token, 2),
+      });
     });
 </script>
 {{ end }}

@@ -82,6 +82,7 @@
     </div>
   </form>
   `;
+      const token = "{{.CSRFToken}}";
       attention.custom({
         title: "Choose your dates",
         msg: html,
@@ -100,40 +101,7 @@
           document.getElementById("end").removeAttribute("disabled");
         },
 
-        callback: async function (result) {
-          console.log("called");
-          let form = document.getElementById("check-availability-form");
-          let formData = new FormData(form);
-          // append the CSRF token from base layout (meta) to the form data
-          formData.append("csrf_token", "{{.CSRFToken}}");
-          formData.append("room_id", "1");
-
-          const res = await fetch("/search-availability-json", {
-            method: "POST",
-            body: formData,
-          });
-          const data = await res.json();
-          if (data.ok) {
-            console.log(data.room_id);
-            attention.custom({
-              icon: "success",
-              showConfirmButton: false,
-              msg:
-                "<p>Room is available</p>" +
-                '<p><a href="/book-room?id=' +
-                data.room_id +
-                "&s=" +
-                data.start_date +
-                "&e=" +
-                data.end_date +
-                '" class="btn btn-primary">Book now!</a></p>',
-            });
-          } else {
-            attention.error({
-              msg: "No avalability",
-            });
-          }
-        },
+        callback: (result) => checkAvailabilityForm(result, token, 1),
       });
     });
 </script>

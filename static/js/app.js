@@ -95,3 +95,36 @@ function Prompt() {
     custom: custom,
   };
 }
+
+async function checkAvailabilityForm(result, token, id) {
+  let form = document.getElementById("check-availability-form");
+  let formData = new FormData(form);
+  // append the CSRF token from base layout (meta) to the form data
+  formData.append("csrf_token", `${token}`);
+  formData.append("room_id", `${id}`);
+
+  const res = await fetch("/search-availability-json", {
+    method: "POST",
+    body: formData,
+  });
+  const data = await res.json();
+  if (data.ok) {
+    attention.custom({
+      icon: "success",
+      showConfirmButton: false,
+      msg:
+        "<p>Room is available</p>" +
+        '<p><a href="/book-room?id=' +
+        data.room_id +
+        "&s=" +
+        data.start_date +
+        "&e=" +
+        data.end_date +
+        '" class="btn btn-primary">Book now!</a></p>',
+    });
+  } else {
+    attention.error({
+      msg: "No avalability",
+    });
+  }
+}
