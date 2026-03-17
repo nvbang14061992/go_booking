@@ -235,6 +235,9 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 type jsonResponse struct {
 	OK      bool   `json:"ok"`
 	Message string `json:"message"`
+	RoomID	string `json:"room_id"`
+	StartDate	string `json:"start_date"`
+	EndDate		string	`json:"end_date"`
 }
 
 // AvailabilityJSON handle request for availability and send JSON response
@@ -253,6 +256,9 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	resp := jsonResponse{
 		OK: avalable,
 		Message: "",
+		StartDate: sd,
+		EndDate: ed,
+		RoomID: strconv.Itoa(roomID),
 	}
 
 
@@ -336,4 +342,14 @@ func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 	m.App.Session.Put(r.Context(), "reservation", res)
 
 	http.Redirect(w, r, "/make-reservation",  http.StatusSeeOther)
+}
+
+func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
+	// id, s, e
+	ID, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	startDate := r.URL.Query().Get("s")
+	endDate := r.URL.Query().Get("e")
+
+	log.Println(ID, startDate, endDate)
+
 }
